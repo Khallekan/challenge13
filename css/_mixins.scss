@@ -1,0 +1,14 @@
+@mixin font400 {
+  font-weight: 400;
+}
+@mixin font500 {
+  font-weight: 500;
+}
+@mixin font700 {
+  font-weight: 700;
+}
+@mixin cursorPointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
