@@ -88,11 +88,16 @@ const changeInput = () => {
 
 const enterKey = (e) => {
     e.stopPropagation();
-    changeInput();
+    if (e.keyCode === 13) {
+      changeInput();
+      return true;
+    }
+    return false;
   },
   buttonClick = (e) => {
     e.stopPropagation();
     changeInput();
+    return true;
   };
 
 // form.addEventListener('submit', changeInput);
