@@ -6,7 +6,7 @@ const ipAddress = document.getElementById('ip');
 const ipLocation = document.getElementById('location');
 const ipTimezone = document.getElementById('timezone');
 const ipIsp = document.getElementById('isp');
-
+const button = document.querySelector('.button');
 //api key
 
 const apiKey = `at_IHD6KW0fHniF3ac59trc7DcMnYd3z`;
@@ -54,7 +54,6 @@ const setMap = (lng, lat) => {
 
 const getIp = async (geoUrl) => {
   const resp = await fetch(geoUrl);
-  console.log(await resp.statusText);
   const data = await resp.json();
   const {
     ip,
@@ -62,7 +61,7 @@ const getIp = async (geoUrl) => {
     isp,
   } = await data;
   setDOM(await ip, await region, await country, await timezone, await isp);
-  console.log(await data);
+  // console.log(await data);
   latitude = await lat;
   longitude = await lng;
   setMap(longitude, latitude);
@@ -79,12 +78,23 @@ window.onload = onLoad(geoUrl);
 
 // changing values on form submit
 
-const changeInput = (e) => {
-  e.preventDefault();
+const changeInput = () => {
+  // e.preventDefault();
   address = input.value;
   geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}`;
   getIp(geoUrl);
   // console.log(input.value);
 };
 
-form.addEventListener('submit', changeInput);
+const enterKey = (e) => {
+    e.stopPropagation();
+    changeInput();
+  },
+  buttonClick = (e) => {
+    e.stopPropagation();
+    changeInput();
+  };
+
+// form.addEventListener('submit', changeInput);
+input.addEventListener('keypress', enterKey);
+button.addEventListener('click', buttonClick);
