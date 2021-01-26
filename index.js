@@ -14,8 +14,7 @@ const apiKey = `at_IHD6KW0fHniF3ac59trc7DcMnYd3z`;
 //mutable stuff
 
 let address = ``;
-let domain = ``;
-let geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}&domain=${domain}`;
+let geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}`;
 let latitude = ``;
 let longitude = ``;
 
@@ -28,8 +27,8 @@ const setDOM = (ip, region, country, timezone, isp) => {
   ipIsp.innerHTML = isp;
   return true;
 };
-let mymap = null;
 
+let mymap = null;
 const setMap = (lng, lat) => {
   if (mymap !== undefined && mymap !== null) {
     mymap.remove();
@@ -83,9 +82,7 @@ window.onload = onLoad(geoUrl);
 const changeInput = (e) => {
   e.preventDefault();
   address = input.value;
-  console.log(typeof input.value);
-  domain = input.value;
-  geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}$domain=${domain}`;
+  geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}`;
   getIp(geoUrl);
   // console.log(input.value);
 };
