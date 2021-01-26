@@ -7,9 +7,6 @@ const ipLocation = document.getElementById('location');
 const ipTimezone = document.getElementById('timezone');
 const ipIsp = document.getElementById('isp');
 
-// let longitude = ``;
-// let latitude = ``;
-
 //api key
 
 const apiKey = `at_IHD6KW0fHniF3ac59trc7DcMnYd3z`;
@@ -17,7 +14,8 @@ const apiKey = `at_IHD6KW0fHniF3ac59trc7DcMnYd3z`;
 //mutable stuff
 
 let address = ``;
-let geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}`;
+let domain = ``;
+let geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}&domain=${domain}`;
 let latitude = ``;
 let longitude = ``;
 
@@ -30,17 +28,17 @@ const setDOM = (ip, region, country, timezone, isp) => {
   ipIsp.innerHTML = isp;
   return true;
 };
+let mymap = null;
 
 const setMap = (lng, lat) => {
-  let mymap = L.map('mapid').setView([lat, lng], 13);
+  if (mymap !== undefined && mymap !== null) {
+    mymap.remove();
+  }
+  mymap = L.map('mapid');
   const myIcon = L.icon({
     iconUrl: '../images/icon-location.svg',
     iconSize: [25, 35],
-    iconAnchor: [lng, lat],
-    // popupAnchor: [-3, -76],
-    // shadowUrl: 'my-icon-shadow.png',
-    // shadowSize: [68, 95],
-    // shadowAnchor: [22, 94],
+    iconAnchor: [0, 0],
   });
 
   let tiles = L.tileLayer(
@@ -50,15 +48,15 @@ const setMap = (lng, lat) => {
         'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     }
   );
-  tiles.addTo(mymap);
-  L.marker([lat, lng], { icon: myIcon }).addTo(mymap);
+  let mapView = mymap.setView(new L.LatLng(lat, lng), 9);
+  tiles.addTo(mapView);
+  L.marker([lat, lng], { icon: myIcon }).addTo(mapView);
 };
 
 const getIp = async (geoUrl) => {
   const resp = await fetch(geoUrl);
   console.log(await resp.statusText);
   const data = await resp.json();
-  // console.log(await data);
   const {
     ip,
     location: { region, country, timezone, lng, lat },
@@ -68,13 +66,7 @@ const getIp = async (geoUrl) => {
   console.log(await data);
   latitude = await lat;
   longitude = await lng;
-  let executed = false;
-  if (executed === false) {
-    executed = true;
-    setMap(longitude, latitude);
-  } else {
-    console.log('new stuff');
-  }
+  setMap(longitude, latitude);
   return false;
 };
 
@@ -91,26 +83,11 @@ window.onload = onLoad(geoUrl);
 const changeInput = (e) => {
   e.preventDefault();
   address = input.value;
-  geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}`;
+  console.log(typeof input.value);
+  domain = input.value;
+  geoUrl = `https://geo.ipify.org/api/v1?apiKey=${apiKey}&ipAddress=${address}$domain=${domain}`;
   getIp(geoUrl);
   // console.log(input.value);
 };
 
 form.addEventListener('submit', changeInput);
-
-// mapping stuff
-
-// L.tileLayer(
-//   'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-//   {
-//     attribution:
-//       'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-//     maxZoom: 18,
-//     id: 'mapbox/satellite-v11',
-//     tileSize: 512,
-//     zoomOffset: -1,
-//     accessToken: 'your.mapbox.access.token',
-//   }
-// ).addTo(mymap);
-
-// test();
